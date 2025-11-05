@@ -8,7 +8,7 @@ High level Scenarios:
 5.	Optional fields – submit allowed 
 6.	Verify the same email id cannot register twice
 7.	Verify phone no do not allow other special characters or characters other than +
-8.	Verify for the successful submission , the values are saved correctly .
+8.	Verify for the successful submission , the values are saved correctly 
 9.	Verify duplicate registration is not allowed .
 
 Defects :
@@ -23,6 +23,9 @@ Defects :
 9.	Phone allows large no of digits should be restricted 
 10.	First name is not mandatory 
 11.	Mandatory fields or invalid fields should be highlighted on Submission
+12.	Validator for lastname is not retrieving correct values (one character less )
+13.	Validation for phone appends with NaN and for numbers the last no is increneted by 1 
+14.	
 
 Running Tests 
 Git clone repo  
