@@ -8,7 +8,7 @@ interface Fixtures{
 export const test = base.extend<Fixtures>({
 
     browser:async({},use) => {
-        const browser = await chromium.launch({headless:false});
+        const browser = await chromium.launch({headless:true});
         await(use(browser));
         await browser.close();
     },
