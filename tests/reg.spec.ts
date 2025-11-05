@@ -36,6 +36,33 @@ test.describe('Registration page validations ',()=>{
     await regpage.Register({password:"strongpassword"});
     await expect (regpage.message).toContainText('phone number should contain');
   });
+  test('valid email validation  ', async ({ page }) => {
+    const em = "sara@test.com"
+    const regpage = new RegisterPg(page);
+    await regpage.Register({password:"strongpassword",phone:"1212122222",last:"Sara",email:em});
+    await expect (regpage.message).toContainText('Success');
+    await expect(page.locator('#resultEmail')).toHaveText(`Email: ${em}`);
+  });
+  test('valid  phone validation  ', async ({ page }) => {
+    const phon = "1212122222"
+    const regpage = new RegisterPg(page);
+    await regpage.Register({password:"strongpassword",phone:"1212122222",last:"Sara",email:"sara@test.com"});
+    await expect (regpage.message).toContainText('Success');
+    await expect(page.locator('#resultPhone')).toHaveText(`Phone Number: ${phon}`);
+  });
+  test('valid  lastname validation  ', async ({ page }) => {
+    const lst = "Doe"
+    const regpage = new RegisterPg(page);
+    await regpage.Register({password:"strongpassword",phone:"1212122222",last:lst,email:"sara@test.com"});
+    await expect (regpage.message).toContainText('Success');
+    await expect(page.locator('#resultLn')).toHaveText(`Last Name: ${lst}`);
+  });
+  test('country not selected ', async ({ page }) => {
+    const regpage = new RegisterPg(page);
+    await regpage.Register({password:"strongpassword",phone:"1212122222",last:"Jane",email:"sara@test.com"});
+    await expect (regpage.message).toContainText('Success');
+    await expect(page.locator('#country')).toHaveText(`Country: ""`);
+  });
 //Validation for invalid phone
 //invalid email
 const invalidephones = ['233','sdssd','34343^&^^^&'];
@@ -45,7 +72,9 @@ const invalidephones = ['233','sdssd','34343^&^^^&'];
 
         const regpage = new RegisterPg(page);
         await regpage.Register({password:"strongpassword",phone:invalidphone});
+        await expect(page.locator('#resultPhone')).toHaveText("");
         await expect (regpage.message).toContainText('phone number should contain');
+        
     });
  }
 
@@ -61,11 +90,12 @@ const invalidemails = ['qww','qwqw@','wewewe@wewew'];
     });
     
   }
+
   //Validation for missing last name
   test('no lastname ', async ({ page }) => {
 
     const regpage = new RegisterPg(page);
-    await regpage.Register({password:"strongpassword",phone:"1212122222",email:"john@test.com",country:"Angola",accept:true})
+    await regpage.Register({password:"strongpassword",phone:"1212122222",email:"john@test.com",country:"Angola",accept:false})
     expect (regpage.message).toContainText('last name');
   });
 //Check for Accept terms
@@ -80,8 +110,21 @@ const invalidemails = ['qww','qwqw@','wewewe@wewew'];
 
     const regpage = new RegisterPg(page);
     //set  accept:False due to existing issue
-    await regpage.Register({password:"strongpassword",phone:"1212122222",first:"John",last:"Doe",email:"john@test.com",country:"Angola",accept:false})
+    const fst ="John";
+    const lst = "Doe";
+    const em  = "john@test.com";
+    const phon ="1212122222";
+    const pswrd = "strongpassword";
+    const cntry = "Angola";
+    await regpage.Register({password:pswrd,phone:phon,first:fst,last:lst,email:em,country:cntry,accept:false})
     expect (regpage.message).toContainText('Successful');
+            //validate data after submitting the form
+            await expect(page.locator('#country')).toHaveText(`Country: ${cntry}`);
+            await expect(page.locator('#resultEmail')).toHaveText(`Email: ${em}`);
+            await expect(page.locator('#resultPhone')).toHaveText(`Phone Number: ${phon}`);
+            await expect(page.locator('#resultFn')).toHaveText(`First Name: ${fst}`);
+            await expect(page.locator('#resultLn')).toHaveText(`Last Name: ${lst}`);
+
   });
   
 });
